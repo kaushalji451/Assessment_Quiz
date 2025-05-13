@@ -48,7 +48,7 @@ Nivesh Jano`,
     if (error) {
       return console.log("Error sending email:", error);
     }
-    console.log("Email sent successfully:", info.response);
+    console.log("Email sent successfully:");
   });
 };
 module.exports = sendEmail;

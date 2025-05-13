@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 const Assessment = () => {
+  const location = useLocation();
+  const userId = location.state.id;
+  const navigate = useNavigate();
   const [selected, setselected] = useState({});
   const [submited, setsubmited] = useState({});
   const [currcount, setcurrcount] = useState(0);
@@ -11,11 +14,7 @@ const Assessment = () => {
     timeLeft: null,
     rightAnswer: null,
   });
-  const location = useLocation();
-  const userId = location.state.id;
-  const navigate = useNavigate();
 
-  // timer;
   const [timeLeft, settimeLeft] = useState(60 * 60);
   let timer;
   useEffect(() => {
@@ -40,16 +39,24 @@ const Assessment = () => {
   // questions get
   useEffect(() => {
     let Questions = async () => {
-      let data = await fetch(
-        `http://localhost:8080/assessment/questions?userId=${userId}`
-      );
-      let result = await data.json();
-      setquestions(result.questions);
+     try {
+       let data = await fetch(
+         `http://localhost:8080/assessment/questions?userId=${userId}`
+       );
+       if (data.status !== 200) {
+         throw new Error("Failed to fetch questions");
+       }
+       let result = await data.json();
+       setquestions(result.questions);
+     } catch (error) {
+       console.log(error);
+       setquestions([]);
+     }
     };
     Questions();
   }, [userId]);
 
-  // how mnay submitted
+  // how many questions submitted
   useEffect(() => {
     const newSubmitted = {};
     if (questions != null) {
@@ -105,7 +112,7 @@ const Assessment = () => {
   };
 
   if (score.rightAnswer != null) {
-    navigate("/score", { state: { score: score ,userId : userId } });
+    navigate("/score", { state: { score: score, userId: userId } });
   }
 
   return (

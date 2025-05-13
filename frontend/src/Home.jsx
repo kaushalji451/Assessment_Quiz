@@ -15,17 +15,23 @@ const Home = () => {
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-    let data = await fetch("http://localhost:8080/assessment/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formdata),
-    });
-    let res = await data.json();
-    if (res.result) {
-      console.log(res.result._id)
-      navigate("/assessment", { state: { id : res.result._id } });
+    try {
+      let data = await fetch("http://localhost:8080/assessment/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formdata),
+      });
+      if (data.status !== 200) {
+        throw new Error("Failed to submit form");
+      }
+      let res = await data.json();
+      if (res.result) {
+        navigate("/assessment", { state: { id: res.result._id } });
+      }
+    } catch (error) {
+      console.log("Error submitting form:", error);
     }
   };
 
