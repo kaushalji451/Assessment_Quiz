@@ -18,6 +18,10 @@ const userSchema = new Schema({
     type: String,
     require: true,
   },
+  score: {
+    type: Schema.Types.ObjectId,
+    ref: "Score",
+  },
 });
 
 const User = mongoose.model("User", userSchema);

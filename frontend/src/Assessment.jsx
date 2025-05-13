@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Assessment = () => {
-  const [selected, setSelected] = useState({});
-  const [submited, setSubmited] = useState({});
+  const [selected, setselected] = useState({});
+  const [submited, setsubmited] = useState({});
   const [currcount, setcurrcount] = useState(0);
   const [questions, setquestions] = useState(null);
+  const [score, setscore] = useState({
+    totalQuestion: null,
+    timeLeft: null,
+    rightAnswer: null,
+  });
   const location = useLocation();
   const userId = location.state.id;
+  const navigate = useNavigate();
 
   // timer;
   const [timeLeft, settimeLeft] = useState(60 * 60);
@@ -30,12 +37,11 @@ const Assessment = () => {
       "0"
     )}`;
   };
-
   // questions get
   useEffect(() => {
     let Questions = async () => {
       let data = await fetch(
-        `http://localhost:8080/questions?userId=${userId}`
+        `http://localhost:8080/assessment/questions?userId=${userId}`
       );
       let result = await data.json();
       setquestions(result.questions);
@@ -50,13 +56,13 @@ const Assessment = () => {
       questions.forEach((_, index) => {
         newSubmitted[index] = false;
       });
-      setSubmited(newSubmitted);
+      setsubmited(newSubmitted);
     }
   }, []);
 
   // handle option change
   const handleOptionChange = (qIndex, option) => {
-    setSelected((prev) => ({
+    setselected((prev) => ({
       ...prev,
       [qIndex]: option,
     }));
@@ -73,7 +79,7 @@ const Assessment = () => {
         }
       });
     }
-    setSubmited(updatedSubmitted);
+    setsubmited(updatedSubmitted);
     let cnt = 0;
     for (let i = 0; i < questions.length; i++) {
       if (questions[i].correctAns === selected[i]) {
@@ -82,15 +88,25 @@ const Assessment = () => {
     }
     setcurrcount(cnt);
     clearInterval(timer);
-    // time left
-    console.log("total questions ",questions.length);
-    console.log(timeLeft);
   };
 
-  // no of right answers
   useEffect(() => {
-    console.log("this is no of right ans", currcount);
+    if (currcount != 0) {
+      handleScore();
+    }
   }, [currcount]);
+
+  let handleScore = () => {
+    setscore({
+      totalQuestion: questions.length,
+      timeLeft: timeLeft,
+      rightAnswer: currcount != 0 && currcount,
+    });
+  };
+
+  if (score.rightAnswer != null) {
+    navigate("/score", { state: { score: score ,userId : userId } });
+  }
 
   return (
     <div>
@@ -120,9 +136,7 @@ const Assessment = () => {
               ))}
             </div>
           ))}
-        <button
-          className="bg-blue-400 py-2 px-4 mx-4 rounded-md font-semibold"
-        >
+        <button className="bg-blue-400 py-2 px-4 mx-4 rounded-md font-semibold">
           Submit
         </button>
       </form>

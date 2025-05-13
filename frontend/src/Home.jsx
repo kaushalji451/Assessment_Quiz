@@ -15,7 +15,7 @@ const Home = () => {
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-    let data = await fetch("http://localhost:8080/user", {
+    let data = await fetch("http://localhost:8080/assessment/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
