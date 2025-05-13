@@ -41,34 +41,38 @@ const Home = () => {
         <div className="max-w-4xl mx-auto p-6 space-y-8">
           {/* Interview Form */}
           <form
-            className="space-y-4 bg-white shadow p-6 rounded h-[80vh]"
+            className="space-y-4 bg-white shadow p-6 rounded-xl h-[80vh]"
             onSubmit={handleSubmit}
           >
-            <h2 className="text-xl font-bold">
-              Fill your Details to start the Assisment
+            <h2 className="text-xl font-bold text-center">
+              Fill your details to give the assessment
             </h2>
-            <label htmlFor="">Name</label>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
               name="name"
+              id="name"
               placeholder="Enter your name"
               required
               className="w-full p-2 border"
               onChange={handleChange}
             />
-            <label htmlFor="">Email</label>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               name="email"
+              id="email"
               placeholder="Enter your email id"
               required
               className="w-full p-2 border"
               onChange={handleChange}
             />
-            <label htmlFor="">Phone Number</label>
+            <label htmlFor="phoneno">Phone Number</label>
             <input
-              type="number"
+              type="tel"
+              pattern="[0-9]{10}"
               name="phoneno"
+              id="phoneno"
               placeholder="Enter your phone number"
               required
               className="w-full p-2 border"
@@ -78,7 +82,7 @@ const Home = () => {
             <div>
               <select
                 name="position"
-                id=""
+                id="position"
                 className="w-full p-2 border"
                 onChange={handleChange}
                 required

@@ -116,18 +116,20 @@ const Assessment = () => {
   }
 
   return (
-    <div>
-      <p className="bg-blue-200 mb-10">These are your questions</p>
-
-      <h1>Countdown: {formatTime()}</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="text-white items-center pb-6 bg-gradient-to-r from-blue-500 to-purple-500">
+      <div className="flex justify-between px-10 text-white items-center py-6  bg-blue-400">
+        <h1 className="font-semibold text-3xl ">Assessment Test</h1>
+      <h1 className="bg-blue-500 rounded-xl px-4 py-1">Countdown - {formatTime()}</h1>
+      </div>
+      <form onSubmit={handleSubmit} className="text-xl px-10">
         {questions != null &&
           questions.map((qui, qIndex) => (
-            <div key={qIndex} className="px-3 my-3">
-              <p>
+            <div key={qIndex} className="px-3 my-6">
+              <p className="font-semibold">
                 Q{qIndex + 1}. {qui.question}
               </p>
-              {qui.options.map((option, optIndex) => (
+             <div className=" px-8">
+               {qui.options.map((option, optIndex) => (
                 <label key={optIndex} className="block">
                   <input
                     type="radio"
@@ -141,11 +143,12 @@ const Assessment = () => {
                   {option}
                 </label>
               ))}
+             </div>
             </div>
           ))}
-        <button className="bg-blue-400 py-2 px-4 mx-4 rounded-md font-semibold">
-          Submit
-        </button>
+         <div className="flex justify-center">
+           <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2">Submit</button>
+         </div>
       </form>
     </div>
   );
