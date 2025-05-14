@@ -12,16 +12,17 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const uploadFileToGoogleDrive = async (filePath) => {
+
     try {
         if (!filePath) {
             throw new Error('File path is required');
         }
-        const drive = await google.drive({ version: 'v3' }, auth)
+        const drive = await google.drive({ version: 'v3', auth })
 
         // upload file to Google Drive
 
         const fileMetadata = {
-            name: filePath.split('/').pop(), // Extract file name from path
+            name: filePath.split('/').pop(), 
             parents: [process.env.GOOGLE_DRIVE_FOLDER_ID] // Folder ID to upload the file into
         };
 
@@ -40,7 +41,7 @@ const uploadFileToGoogleDrive = async (filePath) => {
         const Url = `https://drive.google.com/file/d/${fileId}/preview`;
        
         console.log('File uploaded successfully. File ID:', driveResponse.data.id);
-        return { Url };
+        return  Url ;
     } catch (error) {
         console.error('Error uploading file to Google Drive:', error);
         throw error;
