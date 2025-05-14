@@ -39,19 +39,19 @@ const Assessment = () => {
   // questions get
   useEffect(() => {
     let Questions = async () => {
-     try {
-       let data = await fetch(
-         `http://localhost:8080/assessment/questions?userId=${userId}`
-       );
-       if (data.status !== 200) {
-         throw new Error("Failed to fetch questions");
-       }
-       let result = await data.json();
-       setquestions(result.questions);
-     } catch (error) {
-       console.log(error);
-       setquestions([]);
-     }
+      try {
+        let data = await fetch(
+          `http://localhost:8080/assessment/questions?userId=${userId}`
+        );
+        if (data.status !== 200) {
+          throw new Error("Failed to fetch questions");
+        }
+        let result = await data.json();
+        setquestions(result.questions);
+      } catch (error) {
+        console.log(error);
+        setquestions([]);
+      }
     };
     Questions();
   }, [userId]);
@@ -116,39 +116,68 @@ const Assessment = () => {
   }
 
   return (
-    <div className="text-white items-center pb-6 bg-gradient-to-r from-blue-500 to-purple-500">
-      <div className="flex justify-between px-10 text-white items-center py-6  bg-blue-400">
-        <h1 className="font-semibold text-3xl ">Assessment Test</h1>
-      <h1 className="bg-blue-500 rounded-xl px-4 py-1">Countdown - {formatTime()}</h1>
+    <div className=" flex justify-center">
+      <div className=" absolute fixed w-full bg-white border border-zinc-400 flex justify-center">
+        <div className="flex justify-between w-[90%] mb-2 py-2 px-2">
+          <h1 className="text-xl font-semibold flex justify-center items-center">
+            Assessment Quiz
+          </h1>
+          <h1 className="bg-zinc-100 py-2 px-4 rounded-lg font-semibold">
+            {formatTime()}
+          </h1>
+        </div>
       </div>
-      <form onSubmit={handleSubmit} className="text-xl px-10">
+
+      <form
+        onSubmit={handleSubmit}
+        className=" mb-8  w-[90%] h-full rounded-lg pb-4 mt-20"
+      >
+        {/* questions */}
         {questions != null &&
           questions.map((qui, qIndex) => (
-            <div key={qIndex} className="px-3 my-6">
-              <p className="font-semibold">
-                Q{qIndex + 1}. {qui.question}
+            <div
+              key={qIndex}
+              className="p-4 border rounded-md border-zinc-400 my-6 mt-2"
+            >
+              <p className="font-bold">
+                <span className="bg-black text-white  px-1 rounded-xs">?</span>{" "}
+                Question {qIndex + 1}*
               </p>
-             <div className=" px-8">
-               {qui.options.map((option, optIndex) => (
-                <label key={optIndex} className="block">
-                  <input
-                    type="radio"
-                    name={`question-${qIndex}`}
-                    value={option}
-                    checked={selected[qIndex] === option}
-                    onChange={() => handleOptionChange(qIndex, option)}
-                    disabled={submited[qIndex]}
-                    required
-                  />{" "}
-                  {option}
-                </label>
-              ))}
-             </div>
+
+              <div className="bg-zinc-100 my-2 px-4 py-4 rounded-lg">
+                <p>{qui.question}</p>
+              </div>
+
+              <div className="flex flex-col gap-2 mt-4">
+                {qui.options.map((option, optIndex) => {
+                  const inputId = `question-${qIndex}-option-${optIndex}`;
+                  return (
+                    <label key={optIndex} className="flex items-center">
+                      <input
+                        type="radio"
+                        name={`question-${qIndex}`}
+                        value={option}
+                        checked={selected[qIndex] === option}
+                        onChange={() => handleOptionChange(qIndex, option)}
+                        disabled={submited[qIndex]}
+                        required
+                        className="size-3 me-4"
+                      />
+                      <div className="w-full bg-zinc-100 py-1 rounded-lg px-3">
+                        {option}
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           ))}
-         <div className="flex justify-center">
-           <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2">Submit</button>
-         </div>
+
+        <div className="flex justify-center">
+          <button className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-lg px-5 py-2.5 text-center me-2 mb-2">
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
