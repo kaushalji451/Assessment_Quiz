@@ -2,13 +2,14 @@ const express = require("express");
 const User = require("../models/user");
 const uploadfile = require("../middleware/multer.middleware");
 const uploadFileToGoogleDrive = require("../utils/fileUpload");
+const fs = require("fs");
+const path = require("path");   
 
 const registrationRoute = express.Router();
 
 registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
     console.log("Registration route hit");
 
-    
     if (!req.body) {
         return res.status(400).json({ message: "No data provided" });
     }
@@ -33,7 +34,13 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
     try {
         // Upload the file to Google Drive
         const Url = await uploadFileToGoogleDrive(filePath);
-
+       
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error("Error deleting file:", err);
+                }
+            });
+    
         // Save user to DB
         const user = new User({
             name,
@@ -56,6 +63,5 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
         res.status(500).json({ message: "Error in registration route", error: error.message });
     }
 });
-
 
 module.exports = registrationRoute;

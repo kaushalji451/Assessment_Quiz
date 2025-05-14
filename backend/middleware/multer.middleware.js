@@ -22,7 +22,21 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-    storage: storage
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // Limit file size to 5MB
+    },
+    fileFilter: function (req, file, cb) {
+        const filetypes = /pdf|docx/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            return cb(new Error('Error: File upload only supports the following filetypes - ' + filetypes));
+        }
+    }
 })
 
 module.exports = upload

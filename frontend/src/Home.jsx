@@ -1,110 +1,153 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const Home = () => {
   const [formdata, setformdata] = useState({
     name: "",
     email: "",
     phoneno: "",
-    position: "",
+    dob: "",
+    gender: "",
+    degree: "",
+    department: "",
   });
-  let navigate = useNavigate();
-  let handleChange = (e) => {
+
+  const [file, setFile] = useState(null);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
     setformdata({ ...formdata, [e.target.name]: e.target.value });
   };
 
-  let handleSubmit = async (e) => {
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const fd = new FormData();
+    for (let key in formdata) {
+      fd.append(key, formdata[key]);
+    }
+    if (file) fd.append("file", file);
+
     try {
-      let data = await fetch("http://localhost:8080/assessment/user", {
+      const res = await fetch("http://localhost:3001/registration/info", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formdata),
+        body: fd,
       });
-      if (data.status !== 200) {
-        throw new Error("Failed to submit form");
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Registration successful!");
+        navigate("/assessment", { state: { id: data.user._id } });
+      } else {
+        alert("Failed: " + data.message);
       }
-      let res = await data.json();
-      if (res.result) {
-        navigate("/assessment", { state: { id: res.result._id } });
-      }
-    } catch (error) {
-      console.log("Error submitting form:", error);
+    } catch (err) {
+      console.error("Error submitting form:", err);
     }
   };
 
   return (
-    <>
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100vh]">
-        <div className="max-w-4xl mx-auto p-6 space-y-8">
-          {/* Interview Form */}
-          <form
-            className="space-y-4 bg-white shadow p-6 rounded-xl h-[80vh]"
-            onSubmit={handleSubmit}
-          >
-            <h2 className="text-xl font-bold text-center">
-              Fill your details to give the assessment
-            </h2>
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Enter your name"
-              required
-              className="w-full p-2 border"
-              onChange={handleChange}
-            />
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Enter your email id"
-              required
-              className="w-full p-2 border"
-              onChange={handleChange}
-            />
-            <label htmlFor="phoneno">Phone Number</label>
-            <input
-              type="tel"
-              pattern="[0-9]{10}"
-              name="phoneno"
-              id="phoneno"
-              placeholder="Enter your phone number"
-              required
-              className="w-full p-2 border"
-              onChange={handleChange}
-            />
+    <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100vh]">
+      <div className="max-w-4xl mx-auto p-6 space-y-8">
+        <form
+          className="space-y-4 bg-white shadow p-6 rounded-xl"
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+        >
+          <h2 className="text-xl font-bold text-center">
+            Fill your details to register
+          </h2>
 
-            <div>
-              <select
-                name="position"
-                id="position"
+          {[
+            { label: "Name", name: "name", type: "text" },
+            { label: "Email", name: "email", type: "email" },
+            {
+              label: "Phone Number",
+              name: "phoneno",
+              type: "tel",
+              pattern: "[0-9]{10}",
+            },
+            { label: "Date of Birth", name: "dob", type: "date" },
+            { label: "Degree", name: "degree", type: "text" },
+          ].map(({ label, name, type, pattern }) => (
+            <div key={name}>
+              <label htmlFor={name}>{label}</label>
+              <input
+                type={type}
+                name={name}
+                id={name}
+                pattern={pattern}
+                required
                 className="w-full p-2 border"
                 onChange={handleChange}
-                required
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Position Apply for
-                </option>
-                <option value="technical_role">Technical Role</option>
-                <option value="business_role">Bussiness Role</option>
-              </select>
+              />
             </div>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+          ))}
+          <div>
+            <label htmlFor="department">Department</label>
+            <select
+              name="department"
+              id="department"
+              className="w-full p-2 border"
+              onChange={handleChange}
+              required
+              defaultValue=""
             >
-              Submit
-            </button>
-          </form>
-        </div>
+              <option value="" disabled>
+                Select a role
+              </option>
+              <option value="Technical Role">Technical Role</option>
+              <option value="Business Role">Business Role</option>
+            </select>
+          </div>
+
+          {/* Gender Select */}
+          <div>
+            <label htmlFor="gender">Gender</label>
+            <select
+              name="gender"
+              id="gender"
+              className="w-full p-2 border"
+              onChange={handleChange}
+              required
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select gender
+              </option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          {/* File Upload */}
+          <div>
+            <label htmlFor="file">Upload CV (PDF)</label>
+            <input
+              type="file"
+              name="file"
+              id="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              required
+              className="w-full p-2 border"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Submit
+          </button>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 
