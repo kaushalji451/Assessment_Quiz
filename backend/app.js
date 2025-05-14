@@ -1,32 +1,27 @@
 const express = require("express");
 const app = express();
-const port = 8080;
+const port = 3001;
 const cors = require("cors");
 const mongoose = require("mongoose");
 const Question = require("./models/question");
 const User = require("./models/user");
 const Score = require("./models/score");
 const dotenv = require("dotenv");
+const main = require("./initdb/connectDb")
 dotenv.config();
 const sendEmailHr = require("./function/sendEmail1");
 const sendEmailCandidate = require("./function/sendEmail2");
+const registrationRoute = require("./routes/registration.route");
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/assisment";
-main()
-  .then(() => {
-    console.log("connected to DB");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
-async function main() {
-  await mongoose.connect(MONGO_URL);
-}
+main()
+
+app.use("/registration",registrationRoute)
+
 
 app.post("/assessment/user", async (req, res) => {
   if (!req.body) {

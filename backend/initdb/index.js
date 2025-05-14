@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const Question = require("../models/question");
 const initdata = require("./data");
-
-
-const MONGO_URL = "mongodb://127.0.0.1:27017/assisment";
+const dotenv = require("dotenv")
+dotenv.config();
+const MONGO_URL = process.env.MONGO_URL
 main()
   .then(() => {
     console.log("connected to DB");
