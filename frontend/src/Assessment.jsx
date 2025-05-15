@@ -41,7 +41,7 @@ const Assessment = () => {
     let Questions = async () => {
       try {
         let data = await fetch(
-          `http://localhost:3001/assessment/questions?userId=${userId}`
+          `http://localhost:3001/questions?userId=${userId}`
         );
         if (data.status !== 200) {
           throw new Error("Failed to fetch questions");

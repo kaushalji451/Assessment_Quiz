@@ -27,7 +27,7 @@ const Score = () => {
       const handleDataSubmit = async () => {
         try {
           const res = await fetch(
-            `http://localhost:3001/assessment/score?userId=${userId}`,
+            `http://localhost:3001/score?userId=${userId}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -38,7 +38,7 @@ const Score = () => {
           console.log("Score submitted:", result);
 
           const emailRes = await fetch(
-            `http://localhost:3001/assessment/sendEmail?userId=${userId}`
+            `http://localhost:3001/sendEmail?userId=${userId}`
           );
           const emailResult = await emailRes.json();
           console.log("Email sent:", emailResult);
