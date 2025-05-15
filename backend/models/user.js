@@ -14,9 +14,31 @@ const userSchema = new Schema({
     type: Number,
     require: true,
   },
-  position: {
+  gender: {
     type: String,
     require: true,
+  },
+  dateOfBirth: {
+    type: String,
+    require: true,
+  },
+  address: {
+    type: String,
+    require: true,
+  },
+  degree: {
+    type: String,
+    require: true,
+  },
+  SOP: {
+    type: String,
+  },
+  cvUrl: {
+    type: String
+  },
+  position: {
+    type: String,
+
   },
   score: {
     type: Schema.Types.ObjectId,
