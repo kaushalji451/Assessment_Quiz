@@ -51,7 +51,7 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-[100vh]">
+    <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-full">
       <div className="max-w-4xl mx-auto p-6 space-y-8">
         <form
           className="space-y-4 bg-white shadow p-6 rounded-xl"
@@ -100,8 +100,8 @@ const Home = () => {
               <option value="" disabled>
                 Select a role
               </option>
-              <option value="Technical Role">Technical Role</option>
-              <option value="Business Role">Business Role</option>
+              <option value="technical_role">Technical Role</option>
+              <option value="business_role">Business Role</option>
             </select>
           </div>
 

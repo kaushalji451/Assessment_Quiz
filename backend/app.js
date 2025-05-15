@@ -9,8 +9,8 @@ const Score = require("./models/score");
 const dotenv = require("dotenv");
 const main = require("./initdb/connectDb")
 dotenv.config();
-const sendEmailHr = require("./function/sendEmail1");
-const sendEmailCandidate = require("./function/sendEmail2");
+const sendEmailHr = require("./utils/sendEmail1");
+const sendEmailCandidate = require("./utils/sendEmail2");
 const registrationRoute = require("./routes/registration.route");
 
 app.use(cors());
@@ -21,21 +21,6 @@ app.use(express.json());
 main()
 
 app.use("/registration",registrationRoute)
-
-
-app.post("/assessment/user", async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: "No data provided" });
-  }
-  try {
-    let user = new User(req.body);
-    let result = await user.save();
-    res.status(200).json({ message: "success", result });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 app.get("/assessment/questions", async (req, res) => {
   let { userId } = req.query;
