@@ -3,7 +3,8 @@ const User = require("../models/user");
 const uploadfile = require("../middleware/multer.middleware");
 const uploadFileToGoogleDrive = require("../utils/fileUpload");
 const fs = require("fs");
-const path = require("path");   
+const path = require("path");  
+const sendEmailforRegistration = require("../utils/sendEmailForRegistration"); 
 
 const registrationRoute = express.Router();
 
@@ -56,6 +57,7 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
 
         const userSaved = await user.save();
         console.log("User saved:", userSaved);
+        await sendEmailforRegistration(userSaved);
 
         res.status(201).json({ message: "User registered successfully", user });
     } catch (error) {
