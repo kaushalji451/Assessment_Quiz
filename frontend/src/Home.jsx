@@ -10,13 +10,17 @@ const Home = () => {
     gender: "",
     degree: "",
     department: "",
+    sop: ""
   });
 
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
-
+const wordCount = formdata.sop.length;
+const isValidSOP = wordCount >= 100 && wordCount <= 500;
   const handleChange = (e) => {
+    
     setformdata({ ...formdata, [e.target.name]: e.target.value });
+    
   };
 
   const handleFileChange = (e) => {
@@ -73,6 +77,7 @@ const Home = () => {
             },
             { label: "Date of Birth", name: "dob", type: "date" },
             { label: "Degree", name: "degree", type: "text" },
+           
           ].map(({ label, name, type, pattern }) => (
             <div key={name}>
               <label htmlFor={name}>{label}</label>
@@ -125,6 +130,26 @@ const Home = () => {
             </select>
           </div>
 
+
+          <div className="mb-6">
+      <label htmlFor="sop" className="block text-sm font-medium text-gray-700 mb-2">
+        Statement of Purpose <span className="text-red-500">*</span>
+      </label>
+      <textarea
+        id="sop"
+        name="sop"
+        required
+        rows={5}
+        className="w-full p-3 border rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+        placeholder="Write your Statement of Purpose here..."
+        value={formdata.sop}
+        onChange={handleChange}
+      />
+      <p className={`mt-2 text-sm ${wordCount < 300 ? "text-red-500" : "text-green-600"}`}>
+        Letter Count: {wordCount} (Recommended: 300–2500 letters)
+      </p>
+    </div>
+
           {/* File Upload */}
           <div>
             <label htmlFor="file">Upload CV (PDF)</label>
@@ -141,7 +166,8 @@ const Home = () => {
 
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className={`bg-blue-600 text-white px-4 py-2 rounded ${isValidSOP ? "hover:bg-blue-700" : "opacity-50 cursor-not-allowed"}`}
+            disabled={!isValidSOP}
           >
             Submit
           </button>
