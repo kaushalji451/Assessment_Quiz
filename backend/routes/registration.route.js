@@ -23,7 +23,7 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
     console.log("Form data:", req.body);
     console.log("Uploaded file:", req.file);
 
-    const { name, email, phoneno, gender, address, dob, degree, department } = req.body;
+    const { name, email, phoneno, gender, address, dob, degree, department,sop } = req.body;
 
     // Validate if file was uploaded
     if (!req.file) {
@@ -53,6 +53,7 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
             degree,
             position: department,
             cvUrl: Url,
+            SOP: sop,
         });
 
         const userSaved = await user.save();
