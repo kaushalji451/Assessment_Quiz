@@ -24,7 +24,7 @@ importers:
         specifier: ^8.14.2
         version: 8.14.3
       multer:
-        specifier: 1.4.5-lts.2
+        specifier: ^1.4.5-lts.2
         version: 1.4.5-lts.2
       nodemailer:
         specifier: ^7.0.3
