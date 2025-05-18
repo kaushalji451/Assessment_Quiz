@@ -2,8 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formValidationSchema } from "../../types/formValidationSchema";
+import {  useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Home = () => {
+  const navigate = useNavigate()
+  const [formdata, setformdata] = useState(null);
   const {
     register,
     handleSubmit,
@@ -15,8 +19,35 @@ const Home = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Validated Data", data);
+    setformdata(data)
+    const fd = new FormData
+    for (let key in formdata) {
+      fd.append(key, formdata[key]);
+    }
+  
+   
+    try {
+      const res = await fetch("http://localhost:3001/registration/info", {
+        method: "POST",
+        body: fd,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("UserInfo",data)
+        alert("Registration successful!");
+        navigate('/confirmation')
+     
+      } else {
+        alert("Failed: " + data.message);
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+    }
+    
   };
 
   const sopValue = watch("sop") || "";

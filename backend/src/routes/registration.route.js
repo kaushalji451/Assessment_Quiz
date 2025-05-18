@@ -66,8 +66,8 @@ registrationRoute.post("/info", uploadfile.single("file"), async (req, res) => {
         console.log("User saved:", userSaved);
         await sendEmailforRegistration(userSaved);
         await sendConfirmationEmailToHr(userSaved)
-
-        res.status(201).json({ message: "User registered successfully", user });
+        console.log(userSaved)
+        res.status(201).json({ message: "User registered successfully", userSaved });
     } catch (error) {
         console.error("Registration error:", error);
         res.status(500).json({ message: "Error in registration route", error: error.message });
