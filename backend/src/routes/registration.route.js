@@ -5,12 +5,13 @@ const uploadFileToGoogleDrive = require("../utils/fileUpload");
 const fs = require("fs");
 const path = require("path");
 const sendEmailforRegistration = require("../utils/sendEmailForRegistration");
-
+const sendConfirmationEmailToHr = require("../utils/sendConfirmationEmailToHr");
+const { v4: uuidv4 } = require('uuid');
 const registrationRoute = express.Router();
 
-registrationRoute.post("/info",uploadfile.single("file"), async (req, res) => {
+registrationRoute.post("/info", uploadfile.single("file"), async (req, res) => {
     console.log("Registration route hit");
-   
+
     console.log(req.body)
 
     if (!req.body) {
@@ -48,6 +49,7 @@ registrationRoute.post("/info",uploadfile.single("file"), async (req, res) => {
 
         // Save user to DB
         const user = new User({
+            registrationId:uuidv4(),
             name,
             address,
             email,
@@ -63,6 +65,7 @@ registrationRoute.post("/info",uploadfile.single("file"), async (req, res) => {
         const userSaved = await user.save();
         console.log("User saved:", userSaved);
         await sendEmailforRegistration(userSaved);
+        await sendConfirmationEmailToHr(userSaved)
 
         res.status(201).json({ message: "User registered successfully", user });
     } catch (error) {

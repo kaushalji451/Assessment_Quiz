@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  id:{
-    type:Schema.Types.UUID,
+  registrationId:{
+    type:String,
     require:true
   },
   name: {
