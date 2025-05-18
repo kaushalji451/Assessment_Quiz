@@ -1,8 +1,8 @@
 import React from 'react'
 import { Routes, Route, Link } from "react-router-dom";
-import Home from './Home';
-import Assessment from './Assessment';
-import Score from './Score';
+import Home from './pages/Home';
+import Assessment from './pages/Assessment';
+import Score from './pages/Score';
 const App = () => {
   return (
     <>

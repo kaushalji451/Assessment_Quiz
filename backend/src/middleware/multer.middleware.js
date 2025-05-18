@@ -5,7 +5,6 @@ const path = require('path');
 
 const uploadPath = path.join(__dirname, '..', 'uploads');
 
-// Ensure the upload directory exists
 if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });
 }
@@ -24,7 +23,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // Limit file size to 5MB
+        fileSize: 1024 * 1024 // Limit file size to 5MB
     },
     fileFilter: function (req, file, cb) {
         const filetypes = /pdf|docx/;

@@ -3,13 +3,15 @@ const User = require("../models/user");
 const uploadfile = require("../middleware/multer.middleware");
 const uploadFileToGoogleDrive = require("../utils/fileUpload");
 const fs = require("fs");
-const path = require("path");  
-const sendEmailforRegistration = require("../utils/sendEmailForRegistration"); 
+const path = require("path");
+const sendEmailforRegistration = require("../utils/sendEmailForRegistration");
 
 const registrationRoute = express.Router();
 
-registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
+registrationRoute.post("/info",uploadfile.single("file"), async (req, res) => {
     console.log("Registration route hit");
+   
+    console.log(req.body)
 
     if (!req.body) {
         return res.status(400).json({ message: "No data provided" });
@@ -19,11 +21,13 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
 
+
+
     // Log form data and file
     console.log("Form data:", req.body);
     console.log("Uploaded file:", req.file);
 
-    const { name, email, phoneno, gender, address, dob, degree, department,sop } = req.body;
+    const { name, email, phoneno, gender, address, dob, degree, department, sop } = req.body;
 
     // Validate if file was uploaded
     if (!req.file) {
@@ -35,13 +39,13 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
     try {
         // Upload the file to Google Drive
         const Url = await uploadFileToGoogleDrive(filePath);
-       
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error("Error deleting file:", err);
-                }
-            });
-    
+
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error("Error deleting file:", err);
+            }
+        });
+
         // Save user to DB
         const user = new User({
             name,
