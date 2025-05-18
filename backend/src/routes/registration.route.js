@@ -10,10 +10,6 @@ const { v4: uuidv4 } = require('uuid');
 const registrationRoute = express.Router();
 
 registrationRoute.post("/info", uploadfile.single("file"), async (req, res) => {
-    console.log("Registration route hit");
-
-    console.log(req.body)
-
     if (!req.body) {
         return res.status(400).json({ message: "No data provided" });
     }
@@ -25,8 +21,6 @@ registrationRoute.post("/info", uploadfile.single("file"), async (req, res) => {
 
 
     // Log form data and file
-    console.log("Form data:", req.body);
-    console.log("Uploaded file:", req.file);
 
     const { name, email, phoneno, gender, address, dob, degree, department, sop } = req.body;
 
@@ -63,10 +57,8 @@ registrationRoute.post("/info", uploadfile.single("file"), async (req, res) => {
         });
 
         const userSaved = await user.save();
-        console.log("User saved:", userSaved);
         await sendEmailforRegistration(userSaved);
         await sendConfirmationEmailToHr(userSaved)
-        console.log(userSaved)
         res.status(201).json({ message: "User registered successfully", userSaved });
     } catch (error) {
         console.error("Registration error:", error);

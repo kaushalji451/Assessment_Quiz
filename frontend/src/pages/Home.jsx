@@ -3,11 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formValidationSchema } from "../../types/formValidationSchema";
 import {  useNavigate } from "react-router-dom";
-import { useState } from "react";
+import axios from "axios";
 
 const Home = () => {
   const navigate = useNavigate()
-  const [formdata, setformdata] = useState(null);
   const {
     register,
     handleSubmit,
@@ -20,24 +19,18 @@ const Home = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log("Validated Data", data);
-    setformdata(data)
     const fd = new FormData
-    for (let key in formdata) {
-      fd.append(key, formdata[key]);
+    for (let key in data) {
+      fd.append(key, data[key]);
     }
   
    
     try {
-      const res = await fetch("http://localhost:3001/registration/info", {
-        method: "POST",
-        body: fd,
-      });
+      const res = await axios.post("http://localhost:3001/registration/info",fd)
 
-      const data = await res.json();
 
-      if (res.ok) {
-        localStorage.setItem("UserInfo",data)
+      if (res.data) {
+        localStorage.setItem("UserInfo",JSON.stringify(res.data.userSaved))
         alert("Registration successful!");
         navigate('/confirmation')
      
@@ -47,7 +40,6 @@ const Home = () => {
     } catch (err) {
       console.error("Error submitting form:", err);
     }
-    
   };
 
   const sopValue = watch("sop") || "";
