@@ -3,14 +3,13 @@ const User = require("../models/user");
 const uploadfile = require("../middleware/multer.middleware");
 const uploadFileToGoogleDrive = require("../utils/fileUpload");
 const fs = require("fs");
-const path = require("path");  
-const sendEmailforRegistration = require("../utils/sendEmailForRegistration"); 
-
+const path = require("path");
+const sendEmailforRegistration = require("../utils/sendEmailForRegistration");
+const sendConfirmationEmailToHr = require("../utils/sendConfirmationEmailToHr");
+const { v4: uuidv4 } = require('uuid');
 const registrationRoute = express.Router();
 
-registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
-    console.log("Registration route hit");
-
+registrationRoute.post("/info", uploadfile.single("file"), async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ message: "No data provided" });
     }
@@ -19,11 +18,11 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Log form data and file
-    console.log("Form data:", req.body);
-    console.log("Uploaded file:", req.file);
 
-    const { name, email, phoneno, gender, address, dob, degree, department,sop } = req.body;
+
+    // Log form data and file
+
+    const { name, email, phoneno, gender, address, dob, degree, department, sop } = req.body;
 
     // Validate if file was uploaded
     if (!req.file) {
@@ -35,15 +34,16 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
     try {
         // Upload the file to Google Drive
         const Url = await uploadFileToGoogleDrive(filePath);
-       
-            fs.unlink(filePath, (err) => {
-                if (err) {
-                    console.error("Error deleting file:", err);
-                }
-            });
-    
+
+        fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error("Error deleting file:", err);
+            }
+        });
+
         // Save user to DB
         const user = new User({
+            registrationId:uuidv4(),
             name,
             address,
             email,
@@ -57,10 +57,9 @@ registrationRoute.post("/info", uploadfile.single('file'), async (req, res) => {
         });
 
         const userSaved = await user.save();
-        console.log("User saved:", userSaved);
         await sendEmailforRegistration(userSaved);
-
-        res.status(201).json({ message: "User registered successfully", user });
+        await sendConfirmationEmailToHr(userSaved)
+        res.status(201).json({ message: "User registered successfully", userSaved });
     } catch (error) {
         console.error("Registration error:", error);
         res.status(500).json({ message: "Error in registration route", error: error.message });

@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  registrationId:{
+    type:String,
+    require:true
+  },
   name: {
     type: String,
     require: true,
